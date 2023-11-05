@@ -4,9 +4,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-
-  const { data: session, status } = useSession();
-  console.log(session);
+  const { data: session, status }: { data: any; status: any } = useSession();
 
   return (
     <nav className="bg-gray-800">
@@ -74,12 +72,14 @@ const Navbar = () => {
                 >
                   Profile
                 </a>
-                <a
-                  href="#"
-                  className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                >
-                  Products
-                </a>
+                {session?.user?.role === "ADMIN" && (
+                  <a
+                    href="/dashboard"
+                    className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                  >
+                    Dashboard
+                  </a>
+                )}
                 {status === "authenticated" ? (
                   <button
                     onClick={() => signOut()}

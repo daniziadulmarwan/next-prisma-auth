@@ -1,10 +1,7 @@
-import { authOptions } from "@/lib/auth";
 import { ChevronLeft, User2 } from "lucide-react";
-import { getServerSession } from "next-auth";
+import LogoutButton from "./logout";
 
 async function Dashboard() {
-  const session = await getServerSession(authOptions);
-  console.log(session);
   return (
     <main className="py-4 px-4 gap-4 flex items-center">
       <div className="h-screen w-1/6 bg-gray-200 rounded-md grid place-items-center">
@@ -19,7 +16,7 @@ async function Dashboard() {
             <div className="w-12 h-12 rounded-full bg-gray-100 grid place-items-center">
               <User2 className="stroke-gray-400" />
             </div>
-            <span>{session?.user?.name}</span>
+            <LogoutButton />
           </div>
         </div>
         <div className="bg-gray-200 rounded-md w-full h-4/6 grid place-items-center">

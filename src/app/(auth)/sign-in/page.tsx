@@ -3,7 +3,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import Link from "next/link";
 
 const signinSchema = z.object({
   email: z
@@ -18,6 +20,9 @@ const signinSchema = z.object({
 type SignInSchema = z.infer<typeof signinSchema>;
 
 function page() {
+  const [errorAlert, setErrorAlert] = useState("");
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -36,7 +41,12 @@ function page() {
       password: data.password,
       callbackUrl,
     });
-    console.log(response);
+
+    if (response?.ok) {
+      router.push(callbackUrl);
+    } else {
+      setErrorAlert("Something wrong");
+    }
   };
 
   return (
@@ -45,6 +55,11 @@ function page() {
         className="w-1/3 space-y-4 border border-gray-200 shadow px-5 py-8 rounded"
         onSubmit={handleSubmit(onSubmit)}
       >
+        {errorAlert && (
+          <span className="bg-red-100 text-red-400 rounded-md text-center w-full inline-block py-2">
+            {errorAlert}
+          </span>
+        )}
         <div className="flex flex-col">
           <label htmlFor="email">Email</label>
           <input
@@ -87,7 +102,7 @@ function page() {
         </div>
 
         <span className="mt-10 text-center block">
-          Don't have account ? <a href="/sign-up">Sign up</a>
+          Don't have account ? <Link href="/sign-up">Sign up</Link>
         </span>
       </form>
     </main>

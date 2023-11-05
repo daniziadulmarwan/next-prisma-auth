@@ -11,7 +11,10 @@ export async function POST(request: Request) {
   });
 
   if (user) {
-    return Response.json({ message: "User registered" }, { status: 400 });
+    return Response.json(
+      { ok: false, message: "User registered" },
+      { status: 400 }
+    );
   }
 
   // 2. hash password
@@ -26,7 +29,7 @@ export async function POST(request: Request) {
         password: hashedPassword,
       },
     });
-    return Response.json({ message: "success" }, { status: 201 });
+    return Response.json({ ok: true, message: "success" }, { status: 201 });
   } catch (error) {
     return Response.json(error);
   }

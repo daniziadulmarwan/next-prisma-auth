@@ -6,6 +6,8 @@ import {
   NextResponse,
 } from "next/server";
 
+const onlyAdminPage: string[] = ["/dashboard"];
+
 export default function withAuth(
   middleware: NextMiddleware,
   requireAuth: string[] = []
@@ -23,6 +25,10 @@ export default function withAuth(
         const url = new URL("/sign-in", req.url);
         url.searchParams.set("callbackUrl", encodeURI(req.url));
         return NextResponse.redirect(url);
+      }
+
+      if (token.role !== "ADMIN" && onlyAdminPage.includes(pathname)) {
+        return NextResponse.redirect(new URL("/", req.url));
       }
     }
 

@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma as any),
   session: { strategy: "jwt" },
   pages: {
     signIn: "/sign-in",
@@ -25,25 +25,25 @@ export const authOptions: NextAuthOptions = {
           password: string;
         };
 
-        if (!email || !password) {
-          return null;
-        }
-
         // 1. check user exist
         const user: any = await prisma.user.findUnique({
           where: { email: email },
         });
+        if (!user) {
+          return null;
+        }
 
         // 2. check password match
-        const matchPassword = await compare(user.password, password);
+        const matchPassword = await compare(password, user.password);
 
-        if (!user && !matchPassword) {
+        if (!matchPassword) {
           return null;
         } else {
           return {
             id: user.id,
             email: user.email,
             name: user.fullname,
+            role: user.role,
           };
         }
       },
@@ -57,7 +57,7 @@ export const authOptions: NextAuthOptions = {
         user: {
           ...session.user,
           id: token.id,
-          randomKey: token.randomKey,
+          role: token.role,
         },
       };
     },
@@ -67,7 +67,7 @@ export const authOptions: NextAuthOptions = {
         return {
           ...token,
           id: u.id,
-          randomKey: u.randomKey,
+          role: u.role,
         };
       }
       return token;

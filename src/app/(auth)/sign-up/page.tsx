@@ -2,6 +2,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const signUpSchema = z
   .object({
@@ -23,6 +26,9 @@ const signUpSchema = z
 type SignInSchema = z.infer<typeof signUpSchema>;
 
 function Signup() {
+  const [errorAlert, setErrorAlert] = useState("");
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -32,15 +38,21 @@ function Signup() {
   });
 
   const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
-    const res = await fetch("/api/auth/register", {
-      method: "post",
-      body: JSON.stringify(data),
-    });
-    console.log(res);
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "post",
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
 
-    const result = await res.json();
-
-    console.log(result);
+      if (result.message !== "success") {
+        setErrorAlert(result.message);
+      } else {
+        router.push("/sign-in");
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
   };
 
   return (
@@ -49,6 +61,11 @@ function Signup() {
         className="w-1/3 space-y-4 border border-gray-200 shadow px-5 py-8 rounded"
         onSubmit={handleSubmit(onSubmit)}
       >
+        {errorAlert && (
+          <span className="text-center inline-block w-full rounded-md py-2 bg-red-100 text-red-500">
+            {errorAlert}
+          </span>
+        )}
         <div className="flex flex-col">
           <label htmlFor="fullname">Fullname</label>
           <input
@@ -125,7 +142,7 @@ function Signup() {
         </div>
 
         <span className="mt-10 text-center block">
-          Have an account ? <a href="/sign-in">Sign in</a>
+          Have an account ? <Link href="/sign-in">Sign in</Link>
         </span>
       </form>
     </main>
