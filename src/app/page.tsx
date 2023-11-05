@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <main>
       <Navbar />
-      Hello World!
+      <div className="max-w-7xl px-2 sm:px-6 lg:px-8 mx-auto">Hello World!</div>
     </main>
   );
 }
