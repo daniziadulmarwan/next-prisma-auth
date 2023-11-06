@@ -6,7 +6,7 @@ import {
   NextResponse,
 } from "next/server";
 
-const onlyAdminPage: string[] = ["/dashboard"];
+const onlyAdminPage: string[] = [""];
 
 export default function withAuth(
   middleware: NextMiddleware,

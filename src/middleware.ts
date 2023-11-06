@@ -6,4 +6,5 @@ export async function mainMiddleware(request: Request) {
   return res;
 }
 
-export default withAuth(mainMiddleware, ["/dashboard"]);
+// export default withAuth(mainMiddleware, ["/dashboard"]);
+export default withAuth(mainMiddleware, ["/"]);

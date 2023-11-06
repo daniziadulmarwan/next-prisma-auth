@@ -1,5 +1,13 @@
-import Topbar from "@/components/admin/Topbar";
 import { Metadata } from "next";
+import { Poppins } from "next/font/google";
+import AdminSidebar from "./sidebar";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-poppins",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -7,5 +15,10 @@ export const metadata: Metadata = {
 };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>;
+  return (
+    <div className={`flex ${poppins.className}`}>
+      <AdminSidebar />
+      {children}
+    </div>
+  );
 }
